@@ -52,7 +52,7 @@ class CRCTest extends FlatSpec with ChiselScalatestTester with Matchers {
     bits
   }
 
-  def writeBits(dut: CRC, d: Int, n: Int): Unit = {
+  def writeBits(dut: CRC, d: Int, n: Int) = {
     for (i <- (n - 1) to 0 by -1) {
       val bit = (d & 1 << i) != 0
       dut.io.in.poke(bit.B)
@@ -60,7 +60,7 @@ class CRCTest extends FlatSpec with ChiselScalatestTester with Matchers {
     }
   }
 
-  def writeString(dut: CRC, s: String): Unit = {
+  def writeString(dut: CRC, s: String) = {
     s.foreach { c => writeBits(dut, c, 8) }
   }
 
