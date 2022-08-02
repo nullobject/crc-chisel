@@ -37,15 +37,16 @@
 
 package crc
 
-import chisel3._
 import chiseltest._
 import org.scalatest._
+import flatspec.AnyFlatSpec
+import matchers.should.Matchers
 
-class CRCTest extends FlatSpec with ChiselScalatestTester with Matchers {
+class CRCTest extends AnyFlatSpec with ChiselScalatestTester with Matchers {
   def readBits(dut: CRC, n: Int) = {
     var bits = 0
     for (i <- (n - 1) to 0 by -1) {
-      val bit = dut.io.out.peek().litValue()
+      val bit = dut.io.out.peek().litValue
       dut.clock.step()
       bits |= (bit.toInt << i)
     }
@@ -55,7 +56,7 @@ class CRCTest extends FlatSpec with ChiselScalatestTester with Matchers {
   def writeBits(dut: CRC, d: Int, n: Int) = {
     for (i <- (n - 1) to 0 by -1) {
       val bit = (d & 1 << i) != 0
-      dut.io.in.poke(bit.B)
+      dut.io.in.poke(bit)
       dut.clock.step()
     }
   }
@@ -66,21 +67,21 @@ class CRCTest extends FlatSpec with ChiselScalatestTester with Matchers {
 
   it should "calculate the CRC" in {
     test(new CRC(16, 0x1021)) { dut =>
-      dut.io.en.poke(true.B)
-      writeString(dut, "Hi!")
-      dut.io.debug.expect(0x31fd.U)
-      dut.io.en.poke(false.B)
-      readBits(dut, 16) shouldBe 0x31fd
+      dut.io.en.poke(true)
+      writeString(dut, "foo")
+      dut.io.debug.expect(0xaf96)
+      dut.io.en.poke(false)
+      readBits(dut, 16) shouldBe 0xaf96
     }
   }
 
   it should "check the CRC" in {
     test(new CRC(16, 0x1021)) { dut =>
-      dut.io.en.poke(true.B)
-      writeString(dut, "Hi!")
-      writeBits(dut, 0x31fd, 16)
-      dut.io.debug.expect(0.U)
-      dut.io.en.poke(false.B)
+      dut.io.en.poke(true)
+      writeString(dut, "foo")
+      writeBits(dut, 0xaf96, 16)
+      dut.io.debug.expect(0)
+      dut.io.en.poke(false)
       readBits(dut, 16) shouldBe 0
     }
   }
