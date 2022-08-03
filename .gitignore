@@ -1,2 +1,5 @@
+.bloop
+.metals
+.vscode
 out
 test_run_dir
