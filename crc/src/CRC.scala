@@ -76,9 +76,10 @@ class CRC(n: Int, g: Int) extends Module {
 
   // Output
   io.out := Mux(io.en, io.in, lfsr.last)
-
-  // Debug
   io.debug := lfsr.asUInt
 
-  printf(p"CRC(data: ${lfsr} 0x${Hexadecimal(lfsr.asUInt)})\n")
+  // Debug
+  if (sys.env.get("DEBUG").contains("1")) {
+    printf(p"CRC(data: ${lfsr} 0x${Hexadecimal(lfsr.asUInt)})\n")
+  }
 }
