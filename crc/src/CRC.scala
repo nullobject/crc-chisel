@@ -44,6 +44,8 @@ import chisel3._
  *
  * @param n The number of CRC bits to calculate.
  * @param g The generator polynomial.
+ *
+ * @see [[https://crccalc.com/]]
  */
 class CRC(n: Int, g: Int) extends Module {
   val io = IO(new Bundle {
@@ -57,6 +59,9 @@ class CRC(n: Int, g: Int) extends Module {
     val debug = Output(UInt(n.W))
   })
 
+  // Returns true if the bit is set at the index for the given value
+  def isBitSet(value: Int, i: Int): Boolean = (value & (1 << i)) != 0
+
   // Linear feedback shift register
   val lfsr = Reg(Vec(n, Bool()))
 
@@ -68,7 +73,7 @@ class CRC(n: Int, g: Int) extends Module {
 
   // Shift the LFSR bits
   for (i <- 0 until n - 1) {
-    if ((g & (1 << i + 1)) != 0)
+    if (isBitSet(g, i + 1))
       lfsr(i + 1) := lfsr(i) ^ bit
     else
       lfsr(i + 1) := lfsr(i)
