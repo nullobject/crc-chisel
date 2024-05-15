@@ -38,6 +38,7 @@
 package crc
 
 import chisel3._
+import circt.stage.ChiselStage
 
 /**
  * Calculates the CRC for a stream of data.
@@ -60,10 +61,10 @@ class CRC(n: Int, g: Int) extends Module {
   })
 
   // Returns true if the bit is set at the index for the given value
-  def isBitSet(value: Int, i: Int): Boolean = (value & (1 << i)) != 0
+  private def isBitSet(value: Int, i: Int): Boolean = (value & (1 << i)) != 0
 
   // Linear feedback shift register
-  val lfsr = Reg(Vec(n, Bool()))
+  private val lfsr = Reg(Vec(n, Bool()))
 
   // XOR the input bit with the last bit in the LFSR
   val bit = Mux(io.en, io.in ^ lfsr.last, false.B)
@@ -85,6 +86,13 @@ class CRC(n: Int, g: Int) extends Module {
 
   // Debug
   if (sys.env.get("DEBUG").contains("1")) {
-    printf(p"CRC(data: ${lfsr} 0x${Hexadecimal(lfsr.asUInt)})\n")
+    printf(p"CRC(data: $lfsr 0x${Hexadecimal(lfsr.asUInt)})\n")
   }
+}
+
+object CRC extends App {
+  ChiselStage.emitSystemVerilogFile(
+    new CRC(16, 0x1021),
+    firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+  )
 }
