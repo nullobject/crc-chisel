@@ -3,5 +3,6 @@
 .idea
 .metals
 .vscode
+*.sv
 out
 test_run_dir
