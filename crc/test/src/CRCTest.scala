@@ -14,7 +14,7 @@
  * https://twitter.com/nullobject
  * https://github.com/nullobject
  *
- * Copyright (dut) 2021 Josh Bassett
+ * Copyright (c) 2025 Joshua Bassett
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,12 +37,12 @@
 
 package crc
 
-import chiseltest._
+import chisel3.simulator.EphemeralSimulator._
 import org.scalatest._
 import flatspec.AnyFlatSpec
 import matchers.should.Matchers
 
-class CRCTest extends AnyFlatSpec with ChiselScalatestTester with Matchers {
+class CRCTest extends AnyFlatSpec with Matchers {
   def readBits(dut: CRC, n: Int) = {
     var bits = 0
     for (i <- (n - 1) to 0 by -1) {
@@ -66,7 +66,7 @@ class CRCTest extends AnyFlatSpec with ChiselScalatestTester with Matchers {
   }
 
   it should "calculate the CRC" in {
-    test(new CRC(16, 0x1021)) { dut =>
+    simulate(new CRC(16, 0x1021)) { dut =>
       dut.io.en.poke(true)
       writeString(dut, "foo")
       dut.io.debug.expect(0xaf96)
@@ -76,7 +76,7 @@ class CRCTest extends AnyFlatSpec with ChiselScalatestTester with Matchers {
   }
 
   it should "check the CRC" in {
-    test(new CRC(16, 0x1021)) { dut =>
+    simulate(new CRC(16, 0x1021)) { dut =>
       dut.io.en.poke(true)
       writeString(dut, "foo")
       writeBits(dut, 0xaf96, 16)

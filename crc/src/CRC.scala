@@ -14,7 +14,7 @@
  * https://twitter.com/nullobject
  * https://github.com/nullobject
  *
- * Copyright (c) 2021 Josh Bassett
+ * Copyright (c) 2025 Joshua Bassett
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,22 +40,28 @@ package crc
 import chisel3._
 import circt.stage.ChiselStage
 
-/**
- * Calculates the CRC for a stream of data.
- *
- * @param n The number of CRC bits to calculate.
- * @param g The generator polynomial.
- *
- * @see [[https://crccalc.com/]]
- */
+/** Calculates the CRC for a stream of data.
+  *
+  * @param n
+  *   The number of CRC bits to calculate.
+  * @param g
+  *   The generator polynomial.
+  *
+  * @see
+  *   [[https://crccalc.com/]]
+  */
 class CRC(n: Int, g: Int) extends Module {
   val io = IO(new Bundle {
+
     /** Enable */
     val en = Input(Bool())
+
     /** Input */
     val in = Input(Bool())
+
     /** Output */
     val out = Output(Bool())
+
     /** Debug */
     val debug = Output(UInt(n.W))
   })
